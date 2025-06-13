@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import '../constants/app_constants.dart';
 
 class ActionButton extends StatelessWidget {
   final String text;
   final IconData icon;
   final Color? color;
   final VoidCallback onPressed;
-
+  
   const ActionButton({
     super.key,
     required this.text,
@@ -24,9 +25,9 @@ class ActionButton extends StatelessWidget {
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: AppConstants.defaultBorderRadius,
         ),
-        elevation: 4,
+        elevation: AppConstants.buttonElevation,
         shadowColor: btnColor.withOpacity(0.4),
       ),
       child: Row(

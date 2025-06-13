@@ -1,29 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../main.dart';
 import '../app_router.dart';
+import '../constants/app_constants.dart';
 import '../services/auth_provider.dart';
+import '../widgets/action_button.dart';
 import '../widgets/logout_dialog.dart';
 import '../widgets/quick_access_card.dart';
-import '../widgets/action_button.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  void _showLogoutDialog() {
+  void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (_) => LogoutConfirmationDialog(
         onConfirm: () async {
           await context.read<AuthProvider>().logout();
-          
-          if (!mounted) return;
-          Navigator.of(context).pushReplacementNamed(Routes.login);
+          if (context.mounted) {
+            Navigator.of(context).pushReplacementNamed(Routes.login);
+          }
         },
       ),
     );
@@ -60,14 +55,14 @@ class _HomePageState extends State<HomePage> {
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: MainApp.accent,
+                        color: AppConstants.accentColor,
                       ),
                     ),
                   ],
                 ),
                 IconButton(
                   icon: const Icon(Icons.logout, color: Colors.red),
-                  onPressed: _showLogoutDialog,
+                  onPressed: () => _showLogoutDialog(context),
                   tooltip: 'Logout',
                 ),
               ],
@@ -122,7 +117,7 @@ class _HomePageState extends State<HomePage> {
                 ActionButton(
                   text: 'Make a Return Request',
                   icon: Icons.reply,
-                  color: MainApp.accent,
+                  color: AppConstants.accentColor,
                   onPressed: () {},
                 ),
               ],
@@ -139,7 +134,7 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: MainApp.accent,
+                color: AppConstants.accentColor,
               ),
             ),
           ),
@@ -147,8 +142,8 @@ class _HomePageState extends State<HomePage> {
 
           ListTile(
             leading: CircleAvatar(
-              backgroundColor: MainApp.accent.withOpacity(0.1),
-              child: const Icon(Icons.inventory, color: MainApp.accent),
+              backgroundColor: AppConstants.accentColor.withOpacity(0.1),
+              child: const Icon(Icons.inventory, color: AppConstants.accentColor),
             ),
             title: const Text('Item borrowed: Projector'),
             subtitle: const Text('July 12, 2023 - 10:30 AM'),
@@ -156,13 +151,13 @@ class _HomePageState extends State<HomePage> {
             trailing: const Icon(
               Icons.arrow_forward_ios,
               size: 16,
-              color: MainApp.accent,
+              color: AppConstants.accentColor,
             ),
           ),
           ListTile(
             leading: CircleAvatar(
-              backgroundColor: MainApp.accent.withOpacity(0.1),
-              child: const Icon(Icons.check_circle, color: MainApp.accent),
+              backgroundColor: AppConstants.accentColor.withOpacity(0.1),
+              child: const Icon(Icons.check_circle, color: AppConstants.accentColor),
             ),
             title: const Text('Return approved: Laptop'),
             subtitle: const Text('July 11, 2023 - 03:15 PM'),
@@ -170,7 +165,7 @@ class _HomePageState extends State<HomePage> {
             trailing: const Icon(
               Icons.arrow_forward_ios,
               size: 16,
-              color: MainApp.accent,
+              color: AppConstants.accentColor,
             ),
           ),
 

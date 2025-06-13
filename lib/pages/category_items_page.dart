@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:image_network/image_network.dart';
-import 'package:mobile_sisfo_sarpras/services/service_provider.dart';
 import 'package:provider/provider.dart';
-import '../models/item.dart';
 import '../app_router.dart';
+import '../models/item.dart';
+import '../services/service_provider.dart';
 
 class CategoryItemsPage extends StatefulWidget {
   final int categoryId;
   final String categoryName;
+  
   const CategoryItemsPage({
     super.key,
     required this.categoryId,
@@ -19,30 +20,29 @@ class CategoryItemsPage extends StatefulWidget {
 }
 
 class _CategoryItemsPageState extends State<CategoryItemsPage> {
-  List<Item> _items = [];
+  final List<Item> _items = [];
   bool _loading = false;
 
   @override
   void initState() {
     super.initState();
-    _loadByCategory();
+    _loadItems();
   }
 
-  Future<void> _loadByCategory() async {
-    final serviceProvider = context.read<ServiceProvider>();
-    
+  Future<void> _loadItems() async {
     setState(() => _loading = true);
-    final items = await serviceProvider.itemService.fetch(
-      categoryId: widget.categoryId,
-    );
-    setState(() {
-      _items = items;
-      _loading = false;
-    });
+    try {
+      final items = await context.read<ServiceProvider>().itemService.fetch(
+        categoryId: widget.categoryId,
+      );
+      setState(() => _items.addAll(items));
+    } finally {
+      setState(() => _loading = false);
+    }
   }
 
   @override
-  Widget build(BuildContext _) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(widget.categoryName)),
       body: _loading
@@ -51,12 +51,12 @@ class _CategoryItemsPageState extends State<CategoryItemsPage> {
             padding: const EdgeInsets.all(16),
             itemCount: _items.length,
             itemBuilder: (_, i) {
-              final it = _items[i];
+              final item = _items[i];
               return ListTile(
                 onTap: () {
                   Navigator.of(context).pushNamed(
                     Routes.itemDetails,
-                    arguments: {'id': it.id},
+                    arguments: {'id': item.id},
                   );
                 },
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -66,16 +66,16 @@ class _CategoryItemsPageState extends State<CategoryItemsPage> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(4),
                     child: ImageNetwork(
-                      image: it.image,
+                      image: item.image,
                       height: 40,
                       width: 40,
                       fitAndroidIos: BoxFit.cover,
-                      onLoading: CircularProgressIndicator(),
+                      onLoading: const CircularProgressIndicator(),
                     ),
                   ),
                 ),
-                title: Text(it.name),
-                subtitle: Text('Stock: ${it.stock}'),
+                title: Text(item.name),
+                subtitle: Text('Stock: ${item.stock}'),
               );
             },
           ),

@@ -9,19 +9,15 @@ class User {
     required this.role,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      id: json['id'],
-      username: json['username'],
-      role: json['role'],
-    );
-  }
+  factory User.fromJson(Map<String, dynamic> json) => User(
+    id: json['id'],
+    username: json['username'],
+    role: json['role'],
+  );
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'username': username,
-      'role': role,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'username': username,
+    'role': role,
+  };
 }

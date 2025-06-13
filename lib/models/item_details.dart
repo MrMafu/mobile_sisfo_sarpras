@@ -16,9 +16,7 @@ class ItemDetails {
   });
 
   factory ItemDetails.fromJson(Map<String, dynamic> json) {
-    // Access the nested "data" object
     final data = json['data'] as Map<String, dynamic>;
-    
     return ItemDetails(
       id: data['id'] as int,
       name: data['name'] as String,
@@ -43,11 +41,9 @@ class ItemUnit {
     required this.status,
   });
 
-  factory ItemUnit.fromJson(Map<String, dynamic> json) {
-    return ItemUnit(
-      id: json['id'] as int,
-      sku: json['sku'] as String,
-      status: json['status'] as String,
-    );
-  }
+  factory ItemUnit.fromJson(Map<String, dynamic> json) => ItemUnit(
+    id: json['id'] as int,
+    sku: json['sku'] as String,
+    status: json['status'] as String,
+  );
 }

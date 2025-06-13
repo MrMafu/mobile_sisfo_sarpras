@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../widgets/bottom_navbar.dart';
 import 'home_page.dart';
 import 'search_page.dart';
-// TODO: import your HistoryPage and ProfilePage when ready
+import '../widgets/bottom_navbar.dart';
 
 class RootPage extends StatefulWidget {
   const RootPage({super.key});
+  
   @override
   State<RootPage> createState() => _RootPageState();
 }

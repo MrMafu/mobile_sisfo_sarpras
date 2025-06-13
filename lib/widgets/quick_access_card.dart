@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_sisfo_sarpras/main.dart';
+import '../constants/app_constants.dart';
 
 class QuickAccessCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final VoidCallback onTap;
-
+  
   const QuickAccessCard({
     super.key,
     required this.icon,
@@ -23,17 +23,17 @@ class QuickAccessCard extends StatelessWidget {
             width: 60,
             height: 60,
             decoration: BoxDecoration(
-              color: MainApp.accent.withOpacity(0.1),
+              color: AppConstants.accentColor.withOpacity(0.1),
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(icon, size: 32, color: MainApp.accent),
+            child: Icon(icon, size: 32, color: AppConstants.accentColor),
           ),
           const SizedBox(height: 8),
           Text(
             title,
             style: TextStyle(
               fontWeight: FontWeight.w500,
-              color: MainApp.accent,
+              color: AppConstants.accentColor,
             ),
           ),
         ],

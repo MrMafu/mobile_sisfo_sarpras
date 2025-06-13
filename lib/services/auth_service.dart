@@ -8,10 +8,10 @@ class AuthService {
   static const _tokenKey = 'auth_token';
   static const _userKey = 'user_data';
   
-  final ApiService _apiService = ApiService();
   final SharedPreferences _prefs;
+  final ApiService _apiService;
 
-  AuthService(this._prefs, ApiService apiService);
+  AuthService(this._prefs, this._apiService);
 
   Future<bool> login(String username, String password) async {
     try {
@@ -25,11 +25,11 @@ class AuthService {
         final token = data['token'];
         final user = User.fromJson(data['user']);
 
-        // Save token and user data
-        await _prefs.setString(_tokenKey, token);
-        await _prefs.setString(_userKey, json.encode(user.toJson()));
+        await Future.wait([
+          _prefs.setString(_tokenKey, token),
+          _prefs.setString(_userKey, json.encode(user.toJson())),
+        ]);
         
-        // Set authorization header
         _apiService.setAuthToken(token);
         return true;
       }
@@ -49,22 +49,21 @@ class AuthService {
     try {
       await _apiService.post('/logout', {});
     } finally {
-      await _prefs.remove(_tokenKey);
-      await _prefs.remove(_userKey);
+      await Future.wait([
+        _prefs.remove(_tokenKey),
+        _prefs.remove(_userKey),
+      ]);
       _apiService.setAuthToken('');
     }
   }
 
-  bool isLoggedIn() {
-    return _prefs.containsKey(_tokenKey);
-  }
+  bool isLoggedIn() => _prefs.containsKey(_tokenKey);
+  String? getToken() => _prefs.getString(_tokenKey);
+  User? getUser() => _prefs.getString(_userKey)?.let(
+    (userString) => User.fromJson(json.decode(userString))
+  );
+}
 
-  String? getToken() {
-    return _prefs.getString(_tokenKey);
-  }
-
-  User? getUser() {
-    final userString = _prefs.getString(_userKey);
-    return userString != null ? User.fromJson(json.decode(userString)) : null;
-  }
+extension _NullableStringExtension on String? {
+  T? let<T>(T Function(String) block) => this != null ? block(this!) : null;
 }

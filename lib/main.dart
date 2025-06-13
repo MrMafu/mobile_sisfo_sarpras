@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'app_router.dart';
+import 'constants/app_constants.dart';
 import 'services/api_service.dart';
 import 'services/auth_provider.dart';
 import 'services/auth_service.dart';
@@ -13,13 +14,10 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
   final apiService = ApiService();
   final authService = AuthService(prefs, apiService);
-  final authProvider = AuthProvider(authService: authService, apiService: apiService);
+  final authProvider = AuthProvider(authService: authService);
   await authProvider.init();
   
-  final serviceProvider = ServiceProvider(
-    apiService: apiService,
-    authProvider: authProvider,
-  );
+  final serviceProvider = ServiceProvider(apiService: apiService);
 
   runApp(
     MultiProvider(
@@ -35,8 +33,6 @@ void main() async {
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
-  static const Color accent = Color(0xFF7752FE);
-  
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
@@ -48,13 +44,13 @@ class MainApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
         colorScheme: const ColorScheme.light(
           primary: Colors.white,
-          secondary: accent,
+          secondary: AppConstants.accentColor,
         ),
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.white,
-          iconTheme: IconThemeData(color: accent),
+          iconTheme: IconThemeData(color: AppConstants.accentColor),
           titleTextStyle: TextStyle(
-            color: accent,
+            color: AppConstants.accentColor,
             fontSize: 20,
             fontWeight: FontWeight.w600,
           ),
@@ -63,19 +59,19 @@ class MainApp extends StatelessWidget {
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: accent,
+            backgroundColor: AppConstants.accentColor,
             foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: AppConstants.defaultBorderRadius,
             ),
-            elevation: 4,
+            elevation: AppConstants.buttonElevation,
           ),
         ),
         cardTheme: const CardThemeData(
           color: Colors.white,
-          elevation: 2,
+          elevation: AppConstants.cardElevation,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(12)),
+            borderRadius: AppConstants.defaultBorderRadius,
           ),
         ),
       ),

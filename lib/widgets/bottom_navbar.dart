@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_sisfo_sarpras/main.dart';
+import '../constants/app_constants.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
-
+  
   const CustomBottomNavBar({
     super.key,
     required this.currentIndex,
@@ -30,23 +30,21 @@ class CustomBottomNavBar extends StatelessWidget {
 
   Widget _buildNavItem(IconData icon, String label, int index) {
     final isSelected = index == currentIndex;
+    final color = isSelected ? AppConstants.accentColor : Colors.grey;
+    
     return GestureDetector(
       onTap: () => onTap(index),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            size: 28,
-            color: isSelected ? MainApp.accent : Colors.grey,
-          ),
+          Icon(icon, size: 28, color: color),
           const SizedBox(height: 4),
           Text(
             label,
             style: TextStyle(
               fontSize: 12,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-              color: isSelected ? MainApp.accent : Colors.grey,
+              color: color,
             ),
           ),
         ],

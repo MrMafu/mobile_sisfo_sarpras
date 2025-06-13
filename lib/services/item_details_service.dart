@@ -1,5 +1,5 @@
-import '../models/item_details.dart';
 import 'api_service.dart';
+import '../models/item_details.dart';
 
 class ItemDetailsService {
   final ApiService _api;

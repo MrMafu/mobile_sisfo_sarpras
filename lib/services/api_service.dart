@@ -1,17 +1,18 @@
 import 'package:dio/dio.dart';
+import 'package:mobile_sisfo_sarpras/constants/app_constants.dart';
 
 class ApiService {
-  final Dio _dio;
+  final Dio _dio = Dio();
 
-  ApiService() : _dio = Dio() {
+  ApiService() {
     _dio.options
       ..baseUrl = 'http://127.0.0.1:8000/api'
-      ..connectTimeout = const Duration(seconds: 30)
-      ..receiveTimeout = const Duration(seconds: 30)
+      ..connectTimeout = AppConstants.apiTimeout
+      ..receiveTimeout = AppConstants.apiTimeout
       ..headers = {'Accept': 'application/json'};
 
     _dio.interceptors.addAll([
-      InterceptorsWrapper(onError: (e, handler) => handler.next(e)),
+      InterceptorsWrapper(onError: (error, handler) => handler.next(error)),
       LogInterceptor(responseBody: true, error: true),
     ]);
   }
@@ -22,9 +23,22 @@ class ApiService {
       : _dio.options.headers.remove('Authorization');
   }
 
-  Future<Response> get(String endpoint, {Map<String, dynamic>? query}) =>
-    _dio.get(endpoint, queryParameters: query);
+  Future<Response> get(
+    String endpoint, {
+      Map<String, dynamic>? query,
+      CancelToken? cancelToken
+    }
+  ) async {
+    return await _dio.get(
+      endpoint,
+      queryParameters: query,
+      cancelToken: cancelToken
+    );
+  }
 
-  Future<Response> post(String endpoint, dynamic data) =>
-    _dio.post(endpoint, data: data);
+  Future<Response> post(String endpoint, dynamic data) => _dio.post(
+    endpoint,
+    data: data,
+    options: Options(contentType: Headers.jsonContentType),
+  );
 }
