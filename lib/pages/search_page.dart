@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_sisfo_sarpras/services/service_provider.dart';
+import 'package:image_network/image_network.dart';
 import 'package:provider/provider.dart';
+import 'package:mobile_sisfo_sarpras/services/service_provider.dart';
 import '../models/category.dart';
 import '../models/item.dart';
 import '../app_router.dart';
@@ -98,9 +99,27 @@ class _SearchPageState extends State<SearchPage> {
                     itemBuilder: (_, i) {
                       final it = _items[i];
                       return ListTile(
-                        leading: it.image.isNotEmpty
-                          ? Image.network(it.image, width: 40, height: 40, fit: BoxFit.cover)
-                          : const Icon(Icons.inventory),
+                        onTap: () {
+                          Navigator.of(context).pushNamed(
+                            Routes.itemDetails,
+                            arguments: {'id': it.id},
+                          );
+                        },
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        leading: SizedBox(
+                          width: 40,
+                          height: 40,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            child: ImageNetwork(
+                              image: it.image,
+                              height: 40,
+                              width: 40,
+                              fitAndroidIos: BoxFit.cover,
+                              onLoading: CircularProgressIndicator(),
+                            ),
+                          ),
+                        ),
                         title: Text(it.name),
                         subtitle: Text('Stock: ${it.stock}'),
                       );

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_sisfo_sarpras/services/api_service.dart';
-import 'package:mobile_sisfo_sarpras/services/auth_service.dart';
 import 'package:provider/provider.dart';
-import 'app_router.dart';
-import 'services/service_provider.dart';
-import 'services/auth_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'app_router.dart';
+import 'services/api_service.dart';
+import 'services/auth_provider.dart';
+import 'services/auth_service.dart';
+import 'services/service_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

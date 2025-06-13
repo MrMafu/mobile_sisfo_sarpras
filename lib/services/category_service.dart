@@ -14,7 +14,7 @@ class CategoryService {
   }
 
   Future<List<Category>> fetch({String? search}) async {
-  final resp = await _api.get('/categories', query: search != null ? {'search': search} : null);
-  return compute(_parseCategories, resp.data['data']);
-}
+    final resp = await _api.get('/categories', query: search != null ? {'search': search} : null);
+    return compute(_parseCategories, resp.data['data']);
+  }
 }

@@ -4,6 +4,7 @@ class Item {
   final String image;
   final int stock;
   final Map<String, dynamic>? category;
+
   Item({
     required this.id,
     required this.name,
@@ -11,6 +12,7 @@ class Item {
     required this.stock,
     this.category,
   });
+
   factory Item.fromJson(Map<String, dynamic> j) => Item(
     id: j['id'] as int,
     name: j['name'] as String,

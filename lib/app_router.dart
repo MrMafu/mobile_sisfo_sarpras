@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'pages/root_page.dart';
 import 'pages/login_page.dart';
 import 'pages/category_items_page.dart';
+import 'pages/item_details_page.dart';
 
 abstract class Routes {
   static const login         = '/login';
   static const root          = '/';
   static const categoryItems = '/category-items';
+  static const itemDetails   = '/item-details';
 }
 
 class AppRouter {
@@ -21,6 +23,11 @@ class AppRouter {
             categoryId: args['id'],
             categoryName: args['name'],
           ),
+        );
+      case Routes.itemDetails:
+        final args = s.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (_) => ItemDetailsPage(itemId: args['id']),
         );
       case Routes.root:
       default:
