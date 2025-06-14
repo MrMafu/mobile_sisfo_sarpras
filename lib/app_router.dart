@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
+import 'pages/root_page.dart';
+import 'pages/login_page.dart';
 import 'pages/category_items_page.dart';
 import 'pages/item_details_page.dart';
-import 'pages/login_page.dart';
-import 'pages/root_page.dart';
+import 'pages/history_page.dart';
+import 'pages/borrow_request_page.dart';
+import 'pages/return_request_page.dart';
 
 abstract class Routes {
-  static const login = '/login';
   static const root = '/';
+  static const login = '/login';
   static const categoryItems = '/category-items';
   static const itemDetails = '/item-details';
+  static const history = '/history';
+  static const borrowRequest = '/borrow-request';
+  static const returnRequest = '/return-request';
 }
 
 class AppRouter {
@@ -29,6 +35,12 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => ItemDetailsPage(itemId: args['id']),
         );
+      case Routes.history:
+        return MaterialPageRoute(builder: (_) => const HistoryPage());
+      case Routes.borrowRequest:
+        return MaterialPageRoute(builder: (_) => const BorrowRequestPage());
+      case Routes.returnRequest:
+        return MaterialPageRoute(builder: (_) => const ReturnRequestPage());
       case Routes.root:
       default:
         return MaterialPageRoute(builder: (_) => const RootPage());

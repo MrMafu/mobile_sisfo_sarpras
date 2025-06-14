@@ -16,6 +16,13 @@ void main() async {
   final authService = AuthService(prefs, apiService);
   final authProvider = AuthProvider(authService: authService);
   await authProvider.init();
+
+  if (authProvider.isLoggedIn) {
+    final token = authService.getToken();
+    if (token != null) {
+      apiService.setAuthToken(token);
+    }
+  }
   
   final serviceProvider = ServiceProvider(apiService: apiService);
 

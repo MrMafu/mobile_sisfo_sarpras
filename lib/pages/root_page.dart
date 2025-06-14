@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'home_page.dart';
 import 'search_page.dart';
+import 'history_page.dart';
 import '../widgets/bottom_navbar.dart';
 
 class RootPage extends StatefulWidget {
@@ -15,7 +16,7 @@ class _RootPageState extends State<RootPage> {
   static const _pages = [
     HomePage(),
     SearchPage(),
-    Placeholder(),
+    HistoryPage(),
     Placeholder(),
   ];
 

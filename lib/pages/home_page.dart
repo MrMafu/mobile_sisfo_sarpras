@@ -6,6 +6,7 @@ import '../services/auth_provider.dart';
 import '../widgets/action_button.dart';
 import '../widgets/logout_dialog.dart';
 import '../widgets/quick_access_card.dart';
+import '../widgets/recent_activities_section.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -63,7 +64,7 @@ class HomePage extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.logout, color: Colors.red),
                   onPressed: () => _showLogoutDialog(context),
-                  tooltip: 'Logout',
+                  tooltip: 'Log Out',
                 ),
               ],
             ),
@@ -93,7 +94,9 @@ class HomePage extends StatelessWidget {
                     QuickAccessCard(
                       icon: Icons.history,
                       title: 'History',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).pushNamed(Routes.history);
+                      },
                     ),
                   ],
                 ),
@@ -111,64 +114,24 @@ class HomePage extends StatelessWidget {
                 ActionButton(
                   text: 'Make a Borrow Request',
                   icon: Icons.add,
-                  onPressed: () {},
+                  onPressed: () => Navigator.of(context).pushNamed(Routes.borrowRequest),
                 ),
                 const SizedBox(height: 16),
                 ActionButton(
                   text: 'Make a Return Request',
                   icon: Icons.reply,
                   color: AppConstants.accentColor,
-                  onPressed: () {},
+                  onPressed: () => Navigator.of(context).pushNamed(Routes.returnRequest),
                 ),
               ],
             ),
           ),
 
           const SizedBox(height: 32),
-
-          // Recent Activities
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              'Recent Activities',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: AppConstants.accentColor,
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-
-          ListTile(
-            leading: CircleAvatar(
-              backgroundColor: AppConstants.accentColor.withOpacity(0.1),
-              child: const Icon(Icons.inventory, color: AppConstants.accentColor),
-            ),
-            title: const Text('Item borrowed: Projector'),
-            subtitle: const Text('July 12, 2023 - 10:30 AM'),
-            textColor: Colors.grey[600],
-            trailing: const Icon(
-              Icons.arrow_forward_ios,
-              size: 16,
-              color: AppConstants.accentColor,
-            ),
-          ),
-          ListTile(
-            leading: CircleAvatar(
-              backgroundColor: AppConstants.accentColor.withOpacity(0.1),
-              child: const Icon(Icons.check_circle, color: AppConstants.accentColor),
-            ),
-            title: const Text('Return approved: Laptop'),
-            subtitle: const Text('July 11, 2023 - 03:15 PM'),
-            textColor: Colors.grey[600],
-            trailing: const Icon(
-              Icons.arrow_forward_ios,
-              size: 16,
-              color: AppConstants.accentColor,
-            ),
-          ),
-
+          
+          // Recent Activities Section
+          const RecentActivitiesSection(), // Use the new widget
+          
           const SizedBox(height: 80),
         ],
       ),

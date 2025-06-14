@@ -57,6 +57,13 @@ class AuthService {
     }
   }
 
+  Future<void> refreshToken() async {
+    final token = getToken();
+    if (token != null) {
+      _apiService.setAuthToken(token);
+    }
+  }
+
   bool isLoggedIn() => _prefs.containsKey(_tokenKey);
   String? getToken() => _prefs.getString(_tokenKey);
   User? getUser() => _prefs.getString(_userKey)?.let(

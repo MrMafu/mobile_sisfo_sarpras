@@ -23,6 +23,10 @@ class ApiService {
       : _dio.options.headers.remove('Authorization');
   }
 
+  void refreshToken(String newToken) {
+    setAuthToken(newToken);
+  }
+
   Future<Response> get(
     String endpoint, {
       Map<String, dynamic>? query,
