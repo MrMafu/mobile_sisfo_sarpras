@@ -88,106 +88,125 @@ class _HistoryPageState extends State<HistoryPage> with SingleTickerProviderStat
     }
   }
 
-  Widget _buildBorrowingItem(Borrowing borrowing) {
+  Widget _buildHistoryItemTile(HistoryItem item) {
+    final isBorrowing = item.type == 'borrowing';
+    final data = item.data;
+    
+    String itemName;
+    String quantityText;
+    IconData icon;
+    String status;
+    DateTime date;
+    
+    if (isBorrowing) {
+      final borrowing = data as Borrowing;
+      itemName = borrowing.item?['name'] ?? 'Item';
+      quantityText = 'Quantity: ${borrowing.quantity}';
+      icon = Icons.inventory;
+      status = borrowing.status;
+      date = borrowing.createdAt;
+    } else {
+      final returning = data as Returning;
+      itemName = returning.borrowing?['item']?['name'] ?? 'Item';
+      quantityText = 'Returned: ${returning.returnedQuantity}';
+      icon = Icons.check_circle;
+      status = returning.status;
+      date = returning.createdAt;
+    }
+    
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      elevation: AppConstants.cardElevation,
+      shape: RoundedRectangleBorder(
+        borderRadius: AppConstants.defaultBorderRadius,
+      ),
+      margin: const EdgeInsets.only(bottom: 16),
       child: InkWell(
+        borderRadius: AppConstants.defaultBorderRadius,
         onTap: () {
-          if (borrowing != null) {
+          if (isBorrowing) {
             Navigator.of(context).pushNamed(
               Routes.borrowingDetail,
-              arguments: {'id': borrowing.id},
+              arguments: {'id': (data as Borrowing).id},
             );
-          }
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    borrowing.item?['name'] ?? 'Item',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Chip(
-                    label: Text(
-                      _getStatusText(borrowing.status),
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    backgroundColor: _getStatusColor(borrowing.status),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Quantity: ${borrowing.quantity}',
-                style: TextStyle(color: Colors.grey[600]),
-              ),
-              Text(
-                'Due: ${DateFormat.yMMMd().format(borrowing.due)}',
-                style: TextStyle(color: Colors.grey[600]),
-              ),
-              Text(
-                'Requested: ${DateFormat.yMMMd().add_jm().format(borrowing.createdAt)}',
-                style: TextStyle(color: Colors.grey[600]),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildReturningItem(Returning returning) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: InkWell(
-        onTap: () {
-          if (returning != null) {
+          } else {
             Navigator.of(context).pushNamed(
               Routes.returningDetail,
-              arguments: {'id': returning.id},
+              arguments: {'id': (data as Returning).id},
             );
           }
         },
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    returning.borrowing?['item']?['name'] ?? 'Item',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Chip(
-                    label: Text(
-                      _getStatusText(returning.status),
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    backgroundColor: _getStatusColor(returning.status),
-                  ),
-                ],
+              // Icon with status color
+              Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: _getStatusColor(status).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(icon, color: _getStatusColor(status)),
               ),
-              const SizedBox(height: 8),
-              Text(
-                'Quantity: ${returning.returnedQuantity}',
-                style: TextStyle(color: Colors.grey[600]),
+              const SizedBox(width: 16),
+              
+              // Item Info
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          itemName,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      quantityText,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      DateFormat.yMMMd().add_jm().format(date),
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              Text(
-                'Requested: ${DateFormat.yMMMd().add_jm().format(returning.createdAt)}',
-                style: TextStyle(color: Colors.grey[600]),
+
+              Chip(
+                label: Text(
+                  _getStatusText(status),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                  ),
+                ),
+                backgroundColor: _getStatusColor(status),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+              ),
+
+              const SizedBox(width: 8),
+              
+              // Arrow Icon
+              const Icon(
+                Icons.arrow_forward_ios,
+                size: 16,
+                color: AppConstants.accentColor,
               ),
             ],
           ),
@@ -203,21 +222,20 @@ class _HistoryPageState extends State<HistoryPage> with SingleTickerProviderStat
     
     if (items.isEmpty) {
       return const Center(
-        child: Text('No history found'),
+        child: Text(
+          'No history found',
+          style: TextStyle(color: Colors.grey),
+        ),
       );
     }
     
     return RefreshIndicator(
       onRefresh: _loadHistory,
       child: ListView.builder(
+        padding: const EdgeInsets.all(16),
         itemCount: items.length,
         itemBuilder: (context, index) {
-          final item = items[index];
-          if (item.type == 'borrowing') {
-            return _buildBorrowingItem(item.data as Borrowing);
-          } else {
-            return _buildReturningItem(item.data as Returning);
-          }
+          return _buildHistoryItemTile(items[index]);
         },
       ),
     );
@@ -228,6 +246,7 @@ class _HistoryPageState extends State<HistoryPage> with SingleTickerProviderStat
     return Scaffold(
       appBar: AppBar(
         title: const Text('History Requests'),
+        centerTitle: true,
         bottom: TabBar(
           controller: _tabController,
           labelColor: AppConstants.accentColor,

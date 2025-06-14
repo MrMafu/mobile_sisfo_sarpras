@@ -53,7 +53,10 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Item Details')),
+      appBar: AppBar(
+        title: const Text('Item Details'),
+        centerTitle: true,
+      ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
@@ -65,52 +68,89 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Center(
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  width: 200,
-                                  height: 200,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: ImageNetwork(
-                                      image: _item!.image,
-                                      height: 200,
-                                      width: 200,
-                                      fitAndroidIos: BoxFit.cover,
-                                      onLoading: const CircularProgressIndicator(),
-                                      onError: const Icon(Icons.broken_image, size: 40),
+                          // Item Header Card
+                          Card(
+                            elevation: AppConstants.cardElevation,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: AppConstants.defaultBorderRadius,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  // Item Image
+                                  Container(
+                                    width: 180,
+                                    height: 180,
+                                    decoration: BoxDecoration(
+                                      borderRadius: AppConstants.defaultBorderRadius,
+                                      color: Colors.grey[100],
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: AppConstants.defaultBorderRadius,
+                                      child: ImageNetwork(
+                                        image: _item!.image,
+                                        height: 180,
+                                        width: 180,
+                                        fitAndroidIos: BoxFit.cover,
+                                        onLoading: const CircularProgressIndicator(),
+                                        onError: const Icon(Icons.inventory_2_outlined, size: 40),
+                                      ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  _item!.name,
-                                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  'Stock: ${_item!.stock}',
-                                  style: const TextStyle(fontSize: 18),
-                                ),
-                                if (_item!.category != null) ...[
-                                  const SizedBox(height: 4),
+                                  const SizedBox(height: 16),
+                                  
+                                  // Item Name
                                   Text(
-                                    'Category: ${_item!.category!['name']}',
-                                    style: const TextStyle(fontSize: 16, color: Colors.grey),
+                                    _item!.name,
+                                    style: const TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
                                   ),
+                                  const SizedBox(height: 8),
+                                  
+                                  // Stock Information
+                                  Text(
+                                    'Stock: ${_item!.stock}',
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      color: AppConstants.accentColor,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  
+                                  // Category
+                                  if (_item!.category != null)
+                                    Text(
+                                      'Category: ${_item!.category!['name']}',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
                                 ],
-                              ],
+                              ),
                             ),
                           ),
                           
                           const SizedBox(height: 24),
+                          
+                          // Units Section Header
                           const Text(
                             'Item Units',
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: AppConstants.accentColor,
+                            ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 12),
                           
+                          // Units List
                           ListView.builder(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
@@ -118,16 +158,68 @@ class _ItemDetailsPageState extends State<ItemDetailsPage> {
                             itemBuilder: (_, index) {
                               final unit = _item!.units[index];
                               return Card(
-                                margin: const EdgeInsets.only(bottom: 8),
-                                child: ListTile(
-                                  title: Text(unit.sku, style: const TextStyle(fontWeight: FontWeight.bold)),
-                                  subtitle: Text('ID: ${unit.id}'),
-                                  trailing: Chip(
-                                    label: Text(
-                                      unit.status.toUpperCase(),
-                                      style: const TextStyle(color: Colors.white, fontSize: 12),
-                                    ),
-                                    backgroundColor: _getStatusColor(unit.status),
+                                elevation: AppConstants.cardElevation,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: AppConstants.defaultBorderRadius,
+                                ),
+                                margin: const EdgeInsets.only(bottom: 16),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12),
+                                  child: Row(
+                                    children: [
+                                      // Status Indicator
+                                      Container(
+                                        width: 50,
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                          color: _getStatusColor(unit.status).withOpacity(0.1),
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                        child: Icon(
+                                          Icons.qr_code_2,
+                                          color: _getStatusColor(unit.status),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      
+                                      // Unit Info
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              unit.sku,
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              'ID: ${unit.id}',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.grey[600],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      
+                                      // Status Chip
+                                      Chip(
+                                        label: Text(
+                                          unit.status.toUpperCase(),
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        backgroundColor: _getStatusColor(unit.status),
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               );

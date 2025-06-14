@@ -84,12 +84,16 @@ class HomePage extends StatelessWidget {
                     QuickAccessCard(
                       icon: Icons.category,
                       title: 'Categories',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, Routes.categoriesList);
+                      },
                     ),
                     QuickAccessCard(
                       icon: Icons.inventory,
                       title: 'Items',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, Routes.itemsList);
+                      },
                     ),
                     QuickAccessCard(
                       icon: Icons.history,

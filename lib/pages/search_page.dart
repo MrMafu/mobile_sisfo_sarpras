@@ -4,6 +4,7 @@ import 'package:image_network/image_network.dart';
 import 'package:provider/provider.dart';
 import 'package:dio/dio.dart';
 import '../app_router.dart';
+import '../constants/app_constants.dart';
 import '../models/category.dart';
 import '../models/item.dart';
 import '../services/service_provider.dart';
@@ -122,76 +123,186 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Search')),
+      appBar: AppBar(
+        title: const Text('Search'),
+        centerTitle: true,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Search Field
             TextField(
               controller: _searchController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: 'Search items…',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
+                hintStyle: TextStyle(color: Colors.grey),
+                prefixIcon: const Icon(Icons.search, color: AppConstants.accentColor),
+                border: const OutlineInputBorder(),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: AppConstants.accentColor),
+                ),
+                contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
               ),
               onChanged: _onSearchChanged,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
 
+            // Categories Section
+            const Text(
+              'Categories',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppConstants.accentColor,
+              ),
+            ),
+            const SizedBox(height: 12),
+            
             SizedBox(
               height: 50,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: _categories.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 8),
+                separatorBuilder: (_, __) => const SizedBox(width: 12),
                 itemBuilder: (_, i) {
                   final category = _categories[i];
-                  return ActionChip(
-                    label: Text(category.name),
-                    onPressed: () => Navigator.of(context).pushNamed(
-                      Routes.categoryItems,
-                      arguments: {'id': category.id, 'name': category.name},
+                  return Card(
+                    elevation: AppConstants.cardElevation,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: AppConstants.defaultBorderRadius,
+                    ),
+                    child: InkWell(
+                      borderRadius: AppConstants.defaultBorderRadius,
+                      onTap: () => Navigator.of(context).pushNamed(
+                        Routes.categoryItems,
+                        arguments: {'id': category.id, 'name': category.name},
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        child: Center(
+                          child: Text(
+                            category.name,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   );
                 },
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
 
+            // Results Section
+            const Text(
+              'List of Items',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppConstants.accentColor,
+              ),
+            ),
+            const SizedBox(height: 12),
+            
             Expanded(
               child: _loading
                 ? const Center(child: CircularProgressIndicator())
-                : ListView.builder(
-                    itemCount: _items.length,
-                    itemBuilder: (_, i) {
-                      final item = _items[i];
-                      return ListTile(
-                        onTap: () {
-                          Navigator.of(context).pushNamed(
-                            Routes.itemDetails,
-                            arguments: {'id': item.id},
-                          );
-                        },
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        leading: SizedBox(
-                          width: 40,
-                          height: 40,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(4),
-                            child: ImageNetwork(
-                              image: item.image,
-                              height: 40,
-                              width: 40,
-                              fitAndroidIos: BoxFit.cover,
-                              onLoading: const CircularProgressIndicator(),
+                : _items.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'No items found',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: _items.length,
+                      itemBuilder: (_, i) {
+                        final item = _items[i];
+                        return Card(
+                          elevation: AppConstants.cardElevation,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: AppConstants.defaultBorderRadius,
+                          ),
+                          margin: const EdgeInsets.only(bottom: 16),
+                          child: InkWell(
+                            borderRadius: AppConstants.defaultBorderRadius,
+                            onTap: () {
+                              Navigator.of(context).pushNamed(
+                                Routes.itemDetails,
+                                arguments: {'id': item.id},
+                              );
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Row(
+                                children: [
+                                  // Item Image
+                                  Container(
+                                    width: 60,
+                                    height: 60,
+                                    decoration: BoxDecoration(
+                                      borderRadius: AppConstants.defaultBorderRadius,
+                                      color: Colors.grey[100],
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: AppConstants.defaultBorderRadius,
+                                      child: ImageNetwork(
+                                        image: item.image,
+                                        height: 60,
+                                        width: 60,
+                                        fitAndroidIos: BoxFit.cover,
+                                        onLoading: const CircularProgressIndicator(strokeWidth: 2),
+                                        onError: const Icon(Icons.inventory_2_outlined),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  
+                                  // Item Info
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item.name,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          'Stock: ${item.stock}',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey[600],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  
+                                  // Arrow Icon
+                                  const Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 16,
+                                    color: AppConstants.accentColor,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        title: Text(item.name),
-                        subtitle: Text('Stock: ${item.stock}'),
-                      );
-                    },
-                  ),
+                        );
+                      },
+                    ),
             ),
           ],
         ),

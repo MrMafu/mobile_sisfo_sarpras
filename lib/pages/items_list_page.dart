@@ -6,21 +6,14 @@ import '../constants/app_constants.dart';
 import '../models/item.dart';
 import '../services/service_provider.dart';
 
-class CategoryItemsPage extends StatefulWidget {
-  final int categoryId;
-  final String categoryName;
-  
-  const CategoryItemsPage({
-    super.key,
-    required this.categoryId,
-    required this.categoryName,
-  });
+class ItemsListPage extends StatefulWidget {
+  const ItemsListPage({super.key});
 
   @override
-  State<CategoryItemsPage> createState() => _CategoryItemsPageState();
+  State<ItemsListPage> createState() => _ItemsListPageState();
 }
 
-class _CategoryItemsPageState extends State<CategoryItemsPage> {
+class _ItemsListPageState extends State<ItemsListPage> {
   final List<Item> _items = [];
   bool _loading = false;
 
@@ -33,9 +26,7 @@ class _CategoryItemsPageState extends State<CategoryItemsPage> {
   Future<void> _loadItems() async {
     setState(() => _loading = true);
     try {
-      final items = await context.read<ServiceProvider>().itemService.fetch(
-        categoryId: widget.categoryId,
-      );
+      final items = await context.read<ServiceProvider>().itemService.fetch();
       setState(() => _items.addAll(items));
     } finally {
       setState(() => _loading = false);
@@ -45,21 +36,18 @@ class _CategoryItemsPageState extends State<CategoryItemsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.categoryName),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('All Items')),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Category header
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16),
+            // Header
+            const Padding(
+              padding: EdgeInsets.only(bottom: 16),
               child: Text(
                 'Items',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: AppConstants.accentColor,
@@ -74,7 +62,7 @@ class _CategoryItemsPageState extends State<CategoryItemsPage> {
                 : _items.isEmpty
                   ? const Center(
                       child: Text(
-                        'No items in this category',
+                        'No items found',
                         style: TextStyle(color: Colors.grey),
                       ),
                     )

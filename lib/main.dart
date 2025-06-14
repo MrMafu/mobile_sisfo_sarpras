@@ -53,6 +53,11 @@ class MainApp extends StatelessWidget {
           primary: Colors.white,
           secondary: AppConstants.accentColor,
         ),
+        chipTheme: ChipThemeData(
+          labelStyle: const TextStyle(color: Colors.white),
+        ).copyWith(
+          shape: StadiumBorder(side: BorderSide.none),
+        ),
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.white,
           iconTheme: IconThemeData(color: AppConstants.accentColor),
