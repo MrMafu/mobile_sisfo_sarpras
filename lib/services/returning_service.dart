@@ -14,6 +14,11 @@ class ReturningService {
       .toList();
   }
 
+  Future<Returning> fetchById(int returningId) async {
+    final response = await _api.get('/returnings/$returningId');
+    return Returning.fromJson(response.data['data']);
+  }
+
   Future<List<Returning>> fetchRecent({int limit = 5}) async {
     final response = await _api.get('/returnings', query: {
       'limit': limit.toString(),

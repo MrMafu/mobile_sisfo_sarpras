@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
+import '../app_router.dart';
 import '../constants/app_constants.dart';
 import '../models/borrowing.dart';
 import '../models/history_item.dart';
@@ -90,44 +91,54 @@ class _HistoryPageState extends State<HistoryPage> with SingleTickerProviderStat
   Widget _buildBorrowingItem(Borrowing borrowing) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  borrowing.item?['name'] ?? 'Item',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+      child: InkWell(
+        onTap: () {
+          if (borrowing != null) {
+            Navigator.of(context).pushNamed(
+              Routes.borrowingDetail,
+              arguments: {'id': borrowing.id},
+            );
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    borrowing.item?['name'] ?? 'Item',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                Chip(
-                  label: Text(
-                    _getStatusText(borrowing.status),
-                    style: const TextStyle(color: Colors.white),
+                  Chip(
+                    label: Text(
+                      _getStatusText(borrowing.status),
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: _getStatusColor(borrowing.status),
                   ),
-                  backgroundColor: _getStatusColor(borrowing.status),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Quantity: ${borrowing.quantity}',
-              style: TextStyle(color: Colors.grey[600]),
-            ),
-            Text(
-              'Due: ${DateFormat.yMMMd().format(borrowing.due)}',
-              style: TextStyle(color: Colors.grey[600]),
-            ),
-            Text(
-              'Requested: ${DateFormat.yMMMd().add_jm().format(borrowing.createdAt)}',
-              style: TextStyle(color: Colors.grey[600]),
-            ),
-          ],
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Quantity: ${borrowing.quantity}',
+                style: TextStyle(color: Colors.grey[600]),
+              ),
+              Text(
+                'Due: ${DateFormat.yMMMd().format(borrowing.due)}',
+                style: TextStyle(color: Colors.grey[600]),
+              ),
+              Text(
+                'Requested: ${DateFormat.yMMMd().add_jm().format(borrowing.createdAt)}',
+                style: TextStyle(color: Colors.grey[600]),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -136,40 +147,50 @@ class _HistoryPageState extends State<HistoryPage> with SingleTickerProviderStat
   Widget _buildReturningItem(Returning returning) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  returning.borrowing?['item']?['name'] ?? 'Item',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+      child: InkWell(
+        onTap: () {
+          if (returning != null) {
+            Navigator.of(context).pushNamed(
+              Routes.returningDetail,
+              arguments: {'id': returning.id},
+            );
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    returning.borrowing?['item']?['name'] ?? 'Item',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                Chip(
-                  label: Text(
-                    _getStatusText(returning.status),
-                    style: const TextStyle(color: Colors.white),
+                  Chip(
+                    label: Text(
+                      _getStatusText(returning.status),
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: _getStatusColor(returning.status),
                   ),
-                  backgroundColor: _getStatusColor(returning.status),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Quantity: ${returning.returnedQuantity}',
-              style: TextStyle(color: Colors.grey[600]),
-            ),
-            Text(
-              'Requested: ${DateFormat.yMMMd().add_jm().format(returning.createdAt)}',
-              style: TextStyle(color: Colors.grey[600]),
-            ),
-          ],
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Quantity: ${returning.returnedQuantity}',
+                style: TextStyle(color: Colors.grey[600]),
+              ),
+              Text(
+                'Requested: ${DateFormat.yMMMd().add_jm().format(returning.createdAt)}',
+                style: TextStyle(color: Colors.grey[600]),
+              ),
+            ],
+          ),
         ),
       ),
     );

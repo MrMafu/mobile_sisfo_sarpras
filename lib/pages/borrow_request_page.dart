@@ -61,12 +61,6 @@ class _BorrowRequestPageState extends State<BorrowRequestPage> {
       ),
     );
 
-    final buttonTheme = TextButtonThemeData(
-      style: TextButton.styleFrom(
-        foregroundColor: AppConstants.accentColor,
-      ),
-    );
-
     final pickedDate = await showDatePicker(
       context: context,
       initialDate: now.add(const Duration(days: 7)),

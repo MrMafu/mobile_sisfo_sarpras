@@ -6,6 +6,8 @@ import 'pages/item_details_page.dart';
 import 'pages/history_page.dart';
 import 'pages/borrow_request_page.dart';
 import 'pages/return_request_page.dart';
+import 'pages/borrowing_detail_page.dart';
+import 'pages/returning_detail_page.dart';
 
 abstract class Routes {
   static const root = '/';
@@ -15,6 +17,8 @@ abstract class Routes {
   static const history = '/history';
   static const borrowRequest = '/borrow-request';
   static const returnRequest = '/return-request';
+  static const borrowingDetail = '/borrowing-detail';
+  static const returningDetail = '/returning-detail';
 }
 
 class AppRouter {
@@ -41,6 +45,16 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const BorrowRequestPage());
       case Routes.returnRequest:
         return MaterialPageRoute(builder: (_) => const ReturnRequestPage());
+      case Routes.borrowingDetail:
+        final args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (_) => BorrowingDetailPage(borrowingId: args['id']),
+        );
+      case Routes.returningDetail:
+        final args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+          builder: (_) => ReturningDetailPage(returningId: args['id']),
+        );
       case Routes.root:
       default:
         return MaterialPageRoute(builder: (_) => const RootPage());

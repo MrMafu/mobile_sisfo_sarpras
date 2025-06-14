@@ -15,6 +15,11 @@ class BorrowingService {
       .toList();
   }
 
+  Future<Borrowing> fetchById(int borrowingId) async {
+    final response = await _api.get('/borrowings/$borrowingId');
+    return Borrowing.fromJson(response.data['data']);
+  }
+
   Future<List<Borrowing>> fetchMyBorrowings() async {
     final response = await _api.get('/borrowings');
     return (response.data['data'] as List)

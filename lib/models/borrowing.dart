@@ -6,6 +6,8 @@ class Borrowing {
   final int quantity;
   final Map<String, dynamic>? item;
   final Map<String, dynamic>? user;
+  final List<dynamic>? borrowingDetails;
+  final Map<String, dynamic>? returning;
 
   Borrowing({
     required this.id,
@@ -15,6 +17,8 @@ class Borrowing {
     required this.quantity,
     this.item,
     this.user,
+    this.borrowingDetails,
+    this.returning,
   });
 
   factory Borrowing.fromJson(Map<String, dynamic> json) {
@@ -26,6 +30,8 @@ class Borrowing {
       quantity: json['quantity'] as int,
       item: json['item'] as Map<String, dynamic>?,
       user: json['user'] as Map<String, dynamic>?,
+      borrowingDetails: json['borrowing_detail'] as List<dynamic>?,
+      returning: json['returning'] as Map<String, dynamic>?,
     );
   }
 }

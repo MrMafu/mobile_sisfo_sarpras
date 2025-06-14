@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:image_network/image_network.dart';
 import 'package:provider/provider.dart';
 import 'package:dio/dio.dart';
-
 import '../app_router.dart';
 import '../models/category.dart';
 import '../models/item.dart';

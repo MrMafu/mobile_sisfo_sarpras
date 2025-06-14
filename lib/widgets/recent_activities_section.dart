@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../app_router.dart';
 import '../constants/app_constants.dart';
 import '../models/borrowing.dart';
 import '../models/returning.dart';
@@ -124,7 +125,17 @@ class _RecentActivitiesSectionState extends State<RecentActivitiesSection> {
                     ? activity.createdAt 
                     : activity.createdAt,
                   onTap: () {
-                    // Handle navigation to details if needed
+                    if (activity is Borrowing) {
+                      Navigator.of(context).pushNamed(
+                        Routes.borrowingDetail,
+                        arguments: {'id': (activity as Borrowing).id},
+                      );
+                    } else if (activity is Returning) {
+                      Navigator.of(context).pushNamed(
+                        Routes.returningDetail,
+                        arguments: {'id': (activity as Returning).id},
+                      );
+                    }
                   },
                 );
               }).toList(),

@@ -29,7 +29,7 @@ class _ReturnRequestPageState extends State<ReturnRequestPage> {
   Future<void> _loadBorrowings() async {
     setState(() => _loading = true);
     try {
-      final borrowings = await context.read<BorrowingService>().fetchMyBorrowings();
+      final borrowings = await context.read<ServiceProvider>().borrowingService.fetchMyBorrowings();
       setState(() => _borrowings
         ..clear()
         ..addAll(borrowings.where((b) => 
@@ -51,7 +51,8 @@ class _ReturnRequestPageState extends State<ReturnRequestPage> {
     });
 
     try {
-      await context.read<ReturningService>().createReturning(
+      final serviceProvider = context.read<ServiceProvider>();
+      await serviceProvider.returningService.createReturning(
         _selectedBorrowing!.id,
         _selectedBorrowing!.quantity,
       );
@@ -87,15 +88,9 @@ class _ReturnRequestPageState extends State<ReturnRequestPage> {
                     items: _borrowings.map((borrowing) {
                       return DropdownMenuItem<Borrowing>(
                         value: borrowing,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(borrowing.item?['name'] ?? 'Item'),
-                            Text(
-                              'Qty: ${borrowing.quantity} | Due: ${DateFormat.yMMMd().format(borrowing.due)}',
-                              style: const TextStyle(fontSize: 12),
-                            ),
-                          ],
+                        child: Text(
+                          '${borrowing.item?['name'] ?? 'Item'} (Qty: ${borrowing.quantity})',
+                          overflow: TextOverflow.ellipsis,
                         ),
                       );
                     }).toList(),
@@ -109,59 +104,61 @@ class _ReturnRequestPageState extends State<ReturnRequestPage> {
                   if (_selectedBorrowing != null) ...[
                     const SizedBox(height: 24),
                     // Borrowing details
-                    Card(
-                      margin: EdgeInsets.zero,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              _selectedBorrowing!.item?['name'] ?? 'Item',
-                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 12),
-                            Row(
-                              children: [
-                                const Text('Quantity: ', style: TextStyle(fontWeight: FontWeight.w500)),
-                                Text(_selectedBorrowing!.quantity.toString()),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                const Text('Borrowed: ', style: TextStyle(fontWeight: FontWeight.w500)),
-                                Text(DateFormat.yMMMd().format(_selectedBorrowing!.createdAt)),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                const Text('Due: ', style: TextStyle(fontWeight: FontWeight.w500)),
-                                Text(
-                                  DateFormat.yMMMd().format(_selectedBorrowing!.due),
-                                  style: TextStyle(
-                                    color: _selectedBorrowing!.due.isBefore(DateTime.now())
-                                      ? Colors.red
-                                      : null,
+                    Flexible(
+                      child: Card(
+                        margin: EdgeInsets.zero,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                _selectedBorrowing!.item?['name'] ?? 'Item',
+                                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  const Text('Quantity: ', style: TextStyle(fontWeight: FontWeight.w500)),
+                                  Text(_selectedBorrowing!.quantity.toString()),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  const Text('Borrowed: ', style: TextStyle(fontWeight: FontWeight.w500)),
+                                  Text(DateFormat.yMMMd().format(_selectedBorrowing!.createdAt)),
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  const Text('Due: ', style: TextStyle(fontWeight: FontWeight.w500)),
+                                  Text(
+                                    DateFormat.yMMMd().format(_selectedBorrowing!.due),
+                                    style: TextStyle(
+                                      color: _selectedBorrowing!.due.isBefore(DateTime.now())
+                                        ? Colors.red
+                                        : null,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                const Text('Status: ', style: TextStyle(fontWeight: FontWeight.w500)),
-                                Text(
-                                  _selectedBorrowing!.status,
-                                  style: TextStyle(
-                                    color: _getStatusColor(_selectedBorrowing!.status),
-                                    fontWeight: FontWeight.bold,
+                                ],
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  const Text('Status: ', style: TextStyle(fontWeight: FontWeight.w500)),
+                                  Text(
+                                    _selectedBorrowing!.status,
+                                    style: TextStyle(
+                                      color: _getStatusColor(_selectedBorrowing!.status),
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
